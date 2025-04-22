@@ -30,7 +30,8 @@ NUM_CLASSES_DIGITS = 10
 NUM_CLASSES_FACES = 2 # Using 2 output neurons and CrossEntropyLoss
 
 # Data Paths (TODO: Update these after unzipping)
-DATA_DIR = './data' # Assumes data.zip is unzipped into a 'data' directory
+DATA_DIR = ''
+ # Assumes data.zip is unzipped into a 'data' directory
 # Example paths - adjust based on actual file names/structure
 DIGIT_TRAIN_IMAGES_PATH = os.path.join(DATA_DIR, 'digitdata/trainingimages')
 DIGIT_TRAIN_LABELS_PATH = os.path.join(DATA_DIR, 'digitdata/traininglabels')
@@ -236,19 +237,23 @@ def run_experiment(task_name, train_dataset, test_dataset, input_size, num_class
 
 # --- Main Execution ---
 if __name__ == '__main__':
+    # Determine the base directory (where the script is located)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
     # Load Data (handle potential errors during loading)
     try:
         print("Loading Digit Data...")
-        digit_train_dataset = ImageLabelDataset(DIGIT_TRAIN_IMAGES_PATH, DIGIT_TRAIN_LABELS_PATH, DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
-        digit_test_dataset = ImageLabelDataset(DIGIT_TEST_IMAGES_PATH, DIGIT_TEST_LABELS_PATH, DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
+        digit_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/trainingimages'), os.path.join(base_dir, 'digitdata/traininglabels'), DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
+        digit_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/testimages'), os.path.join(base_dir, 'digitdata/testlabels'), DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
 
         print("\nLoading Face Data...")
         # Adjust class label mapping if needed (e.g., labels are 0/1)
-        face_train_dataset = ImageLabelDataset(FACE_TRAIN_IMAGES_PATH, FACE_TRAIN_LABELS_PATH, FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
-        face_test_dataset = ImageLabelDataset(FACE_TEST_IMAGES_PATH, FACE_TEST_LABELS_PATH, FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
+        face_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatrain'), os.path.join(base_dir, 'facedata/facedatatrainlabels'), FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
+        face_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatest'), os.path.join(base_dir, 'facedata/facedatatestlabels'), FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
     except (FileNotFoundError, ValueError, AssertionError) as e:
         print(f"\nError loading data: {e}")
-        print("Please ensure data.zip is downloaded, unzipped correctly into a 'data' directory,")
+        print(f"Current script directory: {base_dir}")
+        print("Please ensure data.zip is downloaded, unzipped correctly so that 'digitdata' and 'facedata' folders are in the same directory as this script.")
         print("and the file paths and parsing logic in ImageLabelDataset are correct.")
         exit()
 
@@ -292,6 +297,31 @@ if __name__ == '__main__':
     plt.savefig('pytorch_nn_performance_curves.png') # Save the plot
     print("\nPerformance curves saved to pytorch_nn_performance_curves.png")
     plt.show()
-
     # You would then use these plots and the printed results for your report.
 
+    # Plot Training Time
+    plt.figure(figsize=(12, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(percentages_100, list(digit_times.values()), marker='o', label='Digits')
+    plt.plot(percentages_100, list(face_times.values()), marker='s', label='Faces')
+    plt.xlabel('Percentage of Training Data Used (%)')
+    plt.ylabel('Average Training Time (s)')
+    plt.title('Training Time vs. Training Data Size')
+    plt.legend()
+    plt.grid(True)
+
+    # Plot Prediction Error
+    plt.subplot(1, 2, 2)
+    plt.errorbar(percentages_100, list(digit_errors.values()), yerr=list(digit_stds.values()), fmt='-o', label='Digits', capsize=5)
+    plt.errorbar(percentages_100, list(face_errors.values()), yerr=list(face_stds.values()), fmt='-s', label='Faces', capsize=5)
+    plt.xlabel('Percentage of Training Data Used (%)')
+    plt.ylabel('Average Prediction Error Rate')
+    plt.title('Prediction Error vs. Training Data Size')
+    plt.legend()
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.savefig('pytorch_nn_performance_curves.png') # Save the plot
+    print("\nPerformance curves saved to pytorch_nn_performance_curves.png")
+    plt.show()
+    # You would then use these plots and the printed results for your report.
