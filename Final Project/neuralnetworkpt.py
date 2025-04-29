@@ -5,11 +5,12 @@ from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 import numpy as np
 import time
 import os
-import matplotlib.pyplot as plt # For plotting results
+import matplotlib.pyplot as plt  # For plotting results
+from data_loader import ImageLabelDataset  # Import the custom dataset from data_loader.py
 
 # --- 1. Constants and Hyperparameters ---
 # TODO: Determine these from your data files!
-DIGIT_IMG_HEIGHT = 28 # Example
+DIGIT_IMG_HEIGHT = 28  # Example
 DIGIT_IMG_WIDTH = 28  # Example
 FACE_IMG_HEIGHT = 70  # Example
 FACE_IMG_WIDTH = 60  # Example
@@ -23,90 +24,34 @@ HIDDEN1_SIZE = 128
 HIDDEN2_SIZE = 64
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
-NUM_EPOCHS = 20 # Adjust as needed
+NUM_EPOCHS = 20  # Adjust as needed
 
 # Output sizes
 NUM_CLASSES_DIGITS = 10
-NUM_CLASSES_FACES = 2 # Using 2 output neurons and CrossEntropyLoss
+NUM_CLASSES_FACES = 2  # Using 2 output neurons and CrossEntropyLoss
 
 # Data Paths (TODO: Update these after unzipping)
 DATA_DIR = ''
- # Assumes data.zip is unzipped into a 'data' directory
+# Assumes data.zip is unzipped into a 'data' directory
 # Example paths - adjust based on actual file names/structure
 DIGIT_TRAIN_IMAGES_PATH = os.path.join(DATA_DIR, 'digitdata/trainingimages')
 DIGIT_TRAIN_LABELS_PATH = os.path.join(DATA_DIR, 'digitdata/traininglabels')
-DIGIT_TEST_IMAGES_PATH  = os.path.join(DATA_DIR, 'digitdata/testimages')
-DIGIT_TEST_LABELS_PATH  = os.path.join(DATA_DIR, 'digitdata/testlabels')
+DIGIT_TEST_IMAGES_PATH = os.path.join(DATA_DIR, 'digitdata/testimages')
+DIGIT_TEST_LABELS_PATH = os.path.join(DATA_DIR, 'digitdata/testlabels')
 
 FACE_TRAIN_IMAGES_PATH = os.path.join(DATA_DIR, 'facedata/facedatatrain')
 FACE_TRAIN_LABELS_PATH = os.path.join(DATA_DIR, 'facedata/facedatatrainlabels')
-FACE_TEST_IMAGES_PATH  = os.path.join(DATA_DIR, 'facedata/facedatatest')
-FACE_TEST_LABELS_PATH  = os.path.join(DATA_DIR, 'facedata/facedatatestlabels')
+FACE_TEST_IMAGES_PATH = os.path.join(DATA_DIR, 'facedata/facedatatest')
+FACE_TEST_LABELS_PATH = os.path.join(DATA_DIR, 'facedata/facedatatestlabels')
 
 # Experiment parameters
-TRAINING_PERCENTAGES = np.arange(0.1, 1.1, 0.1) # 10% to 100%
-NUM_RUNS_PER_PERCENTAGE = 5 # For calculating standard deviation
+TRAINING_PERCENTAGES = np.arange(0.1, 1.1, 0.1)  # 10% to 100%
+NUM_RUNS_PER_PERCENTAGE = 5  # For calculating standard deviation
 
 # Use GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# --- 2. Custom Dataset ---
-class ImageLabelDataset(Dataset):
-    def __init__(self, image_file, label_file, img_height, img_width):
-        self.img_height = img_height
-        self.img_width = img_width
-        self.image_data = self._load_images(image_file)
-        self.label_data = self._load_labels(label_file)
-        assert len(self.image_data) == len(self.label_data), "Number of images and labels must match!"
-
-    def _load_images(self, file_path):
-        # TODO: Implement file parsing based on the actual data format
-        # This is a placeholder - you NEED to adapt this based on how
-        # images are stored in the files (e.g., one image per line,
-        # fixed width characters, etc.)
-        print(f"Loading images from: {file_path}")
-        images = []
-        with open(file_path, 'r') as f:
-            lines = f.readlines()
-            img = []
-            for i, line in enumerate(lines):
-                # Assuming each line is a row of the image
-                # Modify this part extensively based on actual format!
-                # Example for fixed width representation:
-                line = line.rstrip('\n') # Remove trailing newline IMPORTANTLY
-                if len(line) == self.img_width: # Check if line looks like image row data
-                   img.extend([1.0 if c in ['#', '+'] else 0.0 for c in line]) # Example: Binary features
-                # Detect image boundaries (e.g., after height lines)
-                if len(img) == self.img_height * self.img_width:
-                   images.append(np.array(img, dtype=np.float32))
-                   img = [] # Reset for next image
-                elif len(line) != self.img_width and len(img) > 0 :
-                    print(f"Warning: Potential parsing issue at line {i+1} in {file_path}. Img buffer size: {len(img)}")
-                    # Decide how to handle potentially incomplete images or parsing errors
-                    img = [] # Discard potentially corrupt buffer
-
-        print(f"Loaded {len(images)} images.")
-        if not images:
-             raise ValueError(f"No images loaded from {file_path}. Check parsing logic and file format.")
-        return torch.tensor(np.array(images)) # Shape: (num_images, height * width)
-
-    def _load_labels(self, file_path):
-        # TODO: Implement label file parsing
-        print(f"Loading labels from: {file_path}")
-        with open(file_path, 'r') as f:
-            # Assuming one label per line, convert to integer
-            labels = [int(line.strip()) for line in f if line.strip()]
-        print(f"Loaded {len(labels)} labels.")
-        return torch.tensor(labels, dtype=torch.long) # Use torch.long for CrossEntropyLoss
-
-    def __len__(self):
-        return len(self.label_data)
-
-    def __getitem__(self, idx):
-        image = self.image_data[idx]
-        label = self.label_data[idx]
-        return image, label
 
 # --- 3. Model Definition ---
 class ThreeLayerNet(nn.Module):
@@ -130,10 +75,11 @@ class ThreeLayerNet(nn.Module):
         out = self.layer3(out)
         return out
 
+
 # --- 4. Training Function ---
 def train_model(model, train_loader, criterion, optimizer, num_epochs):
     start_time = time.time()
-    model.train() # Set model to training mode
+    model.train()  # Set model to training mode
     for epoch in range(num_epochs):
         running_loss = 0.0
         for i, (images, labels) in enumerate(train_loader):
@@ -161,10 +107,10 @@ def train_model(model, train_loader, criterion, optimizer, num_epochs):
 
 # --- 5. Evaluation Function ---
 def evaluate_model(model, test_loader):
-    model.eval() # Set model to evaluation mode
+    model.eval()  # Set model to evaluation mode
     correct = 0
     total = 0
-    with torch.no_grad(): # No need to track gradients during evaluation
+    with torch.no_grad():  # No need to track gradients during evaluation
         for images, labels in test_loader:
             images = images.to(device)
             labels = labels.to(device)
@@ -181,6 +127,7 @@ def evaluate_model(model, test_loader):
     # print(f'Accuracy on test set: {accuracy:.2f} %')
     return error_rate
 
+
 # --- 6. Experiment Loop ---
 def run_experiment(task_name, train_dataset, test_dataset, input_size, num_classes):
     print(f"\n--- Running Experiment for: {task_name} ---")
@@ -194,16 +141,16 @@ def run_experiment(task_name, train_dataset, test_dataset, input_size, num_class
 
     for percent in TRAINING_PERCENTAGES:
         n_train_subset = int(n_train_total * percent)
-        print(f"\nTraining on {percent*100:.0f}% ({n_train_subset} samples)")
+        print(f"\nTraining on {percent * 100:.0f}% ({n_train_subset} samples)")
 
         current_percent_times = []
         current_percent_errors = []
 
         for run in range(NUM_RUNS_PER_PERCENTAGE):
-            print(f"  Run {run+1}/{NUM_RUNS_PER_PERCENTAGE}")
+            print(f"  Run {run + 1}/{NUM_RUNS_PER_PERCENTAGE}")
             # Create model, loss, optimizer FROM SCRATCH for each run
             model = ThreeLayerNet(input_size, HIDDEN1_SIZE, HIDDEN2_SIZE, num_classes).to(device)
-            criterion = nn.CrossEntropyLoss() # Adjust if needed for faces (e.g., BCEWithLogitsLoss)
+            criterion = nn.CrossEntropyLoss()  # Adjust if needed for faces (e.g., BCEWithLogitsLoss)
             optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
             # Sample training indices for this run
@@ -219,8 +166,7 @@ def run_experiment(task_name, train_dataset, test_dataset, input_size, num_class
 
             current_percent_times.append(train_time)
             current_percent_errors.append(test_error)
-            print(f"    Run {run+1}: Time={train_time:.2f}s, Error={test_error:.4f}")
-
+            print(f"    Run {run + 1}: Time={train_time:.2f}s, Error={test_error:.4f}")
 
         # Calculate stats for this percentage
         avg_time = np.mean(current_percent_times)
@@ -235,6 +181,7 @@ def run_experiment(task_name, train_dataset, test_dataset, input_size, num_class
 
     return results_time, results_error_mean, results_error_std
 
+
 # --- Main Execution ---
 if __name__ == '__main__':
     # Determine the base directory (where the script is located)
@@ -243,17 +190,26 @@ if __name__ == '__main__':
     # Load Data (handle potential errors during loading)
     try:
         print("Loading Digit Data...")
-        digit_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/trainingimages'), os.path.join(base_dir, 'digitdata/traininglabels'), DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
-        digit_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/testimages'), os.path.join(base_dir, 'digitdata/testlabels'), DIGIT_IMG_HEIGHT, DIGIT_IMG_WIDTH)
+        digit_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/trainingimages'),
+                                              os.path.join(base_dir, 'digitdata/traininglabels'), DIGIT_IMG_HEIGHT,
+                                              DIGIT_IMG_WIDTH)
+        digit_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'digitdata/testimages'),
+                                             os.path.join(base_dir, 'digitdata/testlabels'), DIGIT_IMG_HEIGHT,
+                                             DIGIT_IMG_WIDTH)
 
         print("\nLoading Face Data...")
         # Adjust class label mapping if needed (e.g., labels are 0/1)
-        face_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatrain'), os.path.join(base_dir, 'facedata/facedatatrainlabels'), FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
-        face_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatest'), os.path.join(base_dir, 'facedata/facedatatestlabels'), FACE_IMG_HEIGHT, FACE_IMG_WIDTH)
+        face_train_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatrain'),
+                                             os.path.join(base_dir, 'facedata/facedatatrainlabels'), FACE_IMG_HEIGHT,
+                                             FACE_IMG_WIDTH)
+        face_test_dataset = ImageLabelDataset(os.path.join(base_dir, 'facedata/facedatatest'),
+                                            os.path.join(base_dir, 'facedata/facedatatestlabels'), FACE_IMG_HEIGHT,
+                                            FACE_IMG_WIDTH)
     except (FileNotFoundError, ValueError, AssertionError) as e:
         print(f"\nError loading data: {e}")
         print(f"Current script directory: {base_dir}")
-        print("Please ensure data.zip is downloaded, unzipped correctly so that 'digitdata' and 'facedata' folders are in the same directory as this script.")
+        print(
+            "Please ensure data.zip is downloaded, unzipped correctly so that 'digitdata' and 'facedata' folders are in the same directory as this script.")
         print("and the file paths and parsing logic in ImageLabelDataset are correct.")
         exit()
 
@@ -270,7 +226,7 @@ if __name__ == '__main__':
 
     # --- Plotting Results ---
     percentages = list(digit_times.keys())
-    percentages_100 = [p * 100 for p in percentages] # For x-axis label
+    percentages_100 = [p * 100 for p in percentages]  # For x-axis label
 
     # Plot Training Time
     plt.figure(figsize=(12, 5))
@@ -285,8 +241,10 @@ if __name__ == '__main__':
 
     # Plot Prediction Error
     plt.subplot(1, 2, 2)
-    plt.errorbar(percentages_100, list(digit_errors.values()), yerr=list(digit_stds.values()), fmt='-o', label='Digits', capsize=5)
-    plt.errorbar(percentages_100, list(face_errors.values()), yerr=list(face_stds.values()), fmt='-s', label='Faces', capsize=5)
+    plt.errorbar(percentages_100, list(digit_errors.values()), yerr=list(digit_stds.values()), fmt='-o', label='Digits',
+                 capsize=5)
+    plt.errorbar(percentages_100, list(face_errors.values()), yerr=list(face_stds.values()), fmt='-s', label='Faces',
+                 capsize=5)
     plt.xlabel('Percentage of Training Data Used (%)')
     plt.ylabel('Average Prediction Error Rate')
     plt.title('Prediction Error vs. Training Data Size')
@@ -294,34 +252,6 @@ if __name__ == '__main__':
     plt.grid(True)
 
     plt.tight_layout()
-    plt.savefig('pytorch_nn_performance_curves.png') # Save the plot
+    plt.savefig('pytorch_nn_performance_curves.png')  # Save the plot
     print("\nPerformance curves saved to pytorch_nn_performance_curves.png")
     plt.show()
-    # You would then use these plots and the printed results for your report.
-
-    # Plot Training Time
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(percentages_100, list(digit_times.values()), marker='o', label='Digits')
-    plt.plot(percentages_100, list(face_times.values()), marker='s', label='Faces')
-    plt.xlabel('Percentage of Training Data Used (%)')
-    plt.ylabel('Average Training Time (s)')
-    plt.title('Training Time vs. Training Data Size')
-    plt.legend()
-    plt.grid(True)
-
-    # Plot Prediction Error
-    plt.subplot(1, 2, 2)
-    plt.errorbar(percentages_100, list(digit_errors.values()), yerr=list(digit_stds.values()), fmt='-o', label='Digits', capsize=5)
-    plt.errorbar(percentages_100, list(face_errors.values()), yerr=list(face_stds.values()), fmt='-s', label='Faces', capsize=5)
-    plt.xlabel('Percentage of Training Data Used (%)')
-    plt.ylabel('Average Prediction Error Rate')
-    plt.title('Prediction Error vs. Training Data Size')
-    plt.legend()
-    plt.grid(True)
-
-    plt.tight_layout()
-    plt.savefig('pytorch_nn_performance_curves.png') # Save the plot
-    print("\nPerformance curves saved to pytorch_nn_performance_curves.png")
-    plt.show()
-    # You would then use these plots and the printed results for your report.
