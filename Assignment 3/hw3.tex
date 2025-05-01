@@ -11,21 +11,44 @@
 
 
 \begin{document}
-\title{Intro to AI Assignment 3 - Probabilistic Reasoning}
-\author{Rajeev Atla - 208003072\\ 
-Jasmin Badyal - 208003131\\
-Dhvani Patel - 21006030}
-\maketitle
+
+
+\begin{center}
+    \Large
+    \sffamily 
+    \textbf{Intro to AI Assignment 3 - Probabilistic Reasoning}
+
+    \vspace{0.5cm}
+
+    \large
+    {Rajeev Atla -
+    2008003072\\}
+    
+    {Dhvani Patel -
+    21006030\\}
+    
+    {Jasmin Badyal -
+    2008003131\\}
+
+    \vspace{0.5cm}
+
+    \today
+\end{center}
 
 \section{Problem 1}
 
-\subsection*{Part a}
+\subsection{Part a}
 
-The joint probability for the events $A, B, C, D, E$ is defined by the chain rule as:
-$$P(A, B, C, D, E) = P(A) \cdot P(B) \cdot P(C) \cdot P(D|A, B) \cdot P(E|B, C).$$
+The joint probability for the events $A, B, C, D, E$ 
+is defined by the chain rule as:
+$$P(A, B, C, D, E) = P(A) \cdot P(B) \cdot P(C) \cdot P(D|A, B) \cdot P(E|B, C)$$
 
-For the specific case where all events are true ($T$), the joint probability is:
-$$P(A=T, B=T, C=T, D=T, E=T) = P(A=T) \cdot P(B=T) \cdot P(C=T) \cdot P(D=T|A=T, B=T) \cdot P(E=T|B=T, C=T).$$
+For the specific case where all events are true ($T$), 
+the joint probability is:
+\begin{align*}
+    P(A=T, B=T, C=T, D=T, E=T) &= P(A=T) \cdot P(B=T) \cdot P(C=T) \\
+    & \cdot P(D=T|A=T, B=T) \cdot P(E=T|B=T, C=T)
+\end{align*}
 
 Substituting the provided numerical values:
 \begin{align*}
@@ -33,47 +56,72 @@ P(A=T, B=T, C=T, D=T, E=T) &= 0.2 \cdot 0.5 \cdot 0.8 \cdot 0.1 \cdot 0.3 \\
 &= 0.0024
 \end{align*}
 
-Thus, the likelihood of the combined event where $A, B, C, D,$ and $E$ are all true is $0.0024$.
+Thus, 
+the likelihood of the combined event where 
+$A, B, C, D$ and $E$ are all true is $\boxed{0.0024}$.
 
-\subsection*{Part b}
+\subsection{Part b}
 
-Now, let's analyze the scenario where all these events are false ($F$). The joint probability is:
-$$P(A=F, B=F, C=F, D=F, E=F) = P(A=F) \cdot P(B=F) \cdot P(C=F) \cdot P(D=F|A=F, B=F) \cdot P(E=F|B=F, C=F).$$
+Now, 
+let's analyze the scenario where all these events are false ($F$). 
+The joint probability is:
+
+\begin{align*}
+P(A=F, B=F, C=F, D=F, E=F) &= P(A=F) \cdot P(B=F) \cdot P(C=F) \\
+& \cdot  P(D=F|A=F, B=F) \cdot P(E=F|B=F, C=F) \\
+\end{align*}
 
 Inserting the given probabilities for this scenario:
+
 \begin{align*}
 P(A=F, B=F, C=F, D=F, E=F) &= 0.8 \cdot 0.5 \cdot 0.2 \cdot 0.1 \cdot 0.8 \\
 &= 0.0064
 \end{align*}
 
-Consequently, the probability of the joint event where $A, B, C, D,$ and $E$ are all false is $0.0064$.
+Consequently, 
+the probability of the joint event where $A, B, C, D,$ 
+and $E$ are all false is $\boxed{0.0064}$.
 
-\subsection*{Part c}
+\subsection{Part c}
 
-We aim to determine the conditional probability $P(\neg A | B, C, D, E)$. Employing Bayes' theorem, this can be expressed as proportional to the joint probability $P(\neg A, B, C, D, E)$:
+We aim to determine the conditional probability 
+$P(\neg A | B, C, D, E)$. 
+Employing Bayes' theorem, 
+this can be expressed as proportional to the joint probability 
+$P(\neg A, B, C, D, E)$:
+
 $$P(\neg A | B, C, D, E) \propto P(\neg A, B, C, D, E).$$
 
-Let the normalization factor be $\alpha$, defined as:
+Let the normalization factor be $\alpha$, 
+defined as:
+
 $$\alpha = \frac{1}{P(A, B, C, D, E) + P(\neg A, B, C, D, E)}.$$
 
 We are given the calculation for $\alpha$:
+
 $$\alpha = \frac{1}{(0.2 \cdot 0.5 \cdot 0.8 \cdot 0.1 \cdot 0.3) + (0.8 \cdot 0.5 \cdot 0.8 \cdot 0.6 \cdot 0.3)}.$$
 $$\alpha = \frac{1}{0.0024 + 0.0576} = \frac{1}{0.06} = \frac{50}{3}.$$
 
 Now, we can compute the conditional probability $P(\neg A | B, C, D, E)$:
+
 $$P(\neg A | B, C, D, E) = \alpha \cdot P(\neg A, B, C, D, E).$$
 $$P(\neg A | B, C, D, E) = \frac{50}{3} \cdot 0.0576.$$
 $$P(\neg A | B, C, D, E) = 0.96.$$
 
-Therefore, the conditional probability $P(\neg A | B, C, D, E)$ is $0.96$.
+Therefore, 
+the conditional probability $P(\neg A | B, C, D, E)$ is $\boxed{0.96}$.
 
 \section{Problem 2}
 
-\subsection*{Part a}
+\subsection{Part a}
 
-Our goal is to determine the conditional probability $P(Burglary | JohnsCalls = \text{true}, MaryCalls = \text{true})$. We are given the formulation:
+Our goal is to determine the conditional probability 
+$P(\text{Burglary} | \text{JohnsCalls} = \text{true}, \text{MaryCalls} = \text{true})$. 
+We are given the formulation:
+
 $$P(B|J, M) = \alpha \cdot P(B) \sum_{E} P(E) \sum_{A} P(A|B, E) \cdot P(J|A) \cdot P(M|A)$$
-where $\alpha = \frac{1}{P(J, M)}$.
+where 
+$\alpha = \frac{1}{P(J, M)}$.
 
 Following the provided steps and correcting the final calculation:
 \begin{align*}
@@ -85,28 +133,48 @@ P(B|J,M)
 & = \begin{pmatrix} \frac{0.00059224259}{0.0020853609} \\ \frac{0.0014918576}{0.0020853609} \end{pmatrix} \\
 & = \begin{pmatrix} 0.284 \\ 0.716 \end{pmatrix}
 \end{align*}
-Here, 0.284 signifies the probability of a burglary occurring given that John and Mary call, while 0.716 represents the probability of no burglary under the same conditions.
 
-\newpage
+Here, 
+$\boxed{0.284}$ signifies the probability of a burglary occurring given that John and Mary call, 
+while $\boxed{0.716}$ represents the probability of no burglary under the same conditions.
 
-\subsection*{Part b}
+\subsection{Part b}
 
-What is the computational cost of determining $P(X_1 | X_n = \text{true})$ via enumeration? What is the cost using variable elimination?
+What is the computational cost of determining 
+$P(X_1 | X_n = \text{true})$ 
+via enumeration? 
+What is the cost using variable elimination?
 
-\subsubsection*{Complexity via Enumeration}
+\subsubsection{Complexity via Enumeration}
 
-To compute $P(X_1 | X_n = \text{true})$ by enumeration, we initially assess two binary trees for each state of $X_1$. Each of these trees possesses a depth of $n - 2$. Consequently, the aggregate computational effort for enumeration amounts to $\mathbf{O(2^n)}$.
+To compute 
+$P(X_1 | X_n = \text{true})$ 
+by enumeration, 
+we initially assess two binary trees for each state of $X_1$. 
+Each of these trees possesses a depth of $n - 2$. 
+Consequently, 
+the aggregate computational effort for enumeration amounts to $\boxed{O(2^n)}$.
 
-\subsubsection*{Complexity via Variable Elimination}
+\subsubsection{Complexity via Variable Elimination}
 
-Moving on to variable elimination, the size of the factors will not exceed two variables. For instance, when computing $P(X_1 | X_n = \text{true})$:
+Moving on to variable elimination, 
+the size of the factors will not exceed two variables. 
+For instance, 
+when computing $P(X_1 | X_n = \text{true})$:
+
 \begin{align*}
 P(X_1 | X_n = \text{true})
 & = \alpha \cdot P(X_1) \cdots \sum_{x_{n-2}} P(x_{n-2} | x_{n-3}) \sum_{x_{n-1}} P(x_{n-1} | x_{n-2}) P(X_n = \text{true} | x_{n-1}) \\
 & = \alpha \cdot P(X_1) \cdots \sum_{x_{n-2}} P(x_{n-2} | x_{n-3}) \sum_{x_{n-1}} f_{X_{n-1}}(x_{n-1}, x_{n-2}) f_{X_n}(x_{n-1}) \\
 & = \alpha \cdot P(X_1) \cdots \sum_{x_{n-2}} P(x_{n-2} | x_{n-3}) f_{\frac{x_{n-2}}{X_{n-1} \cdot X_n}}
 \end{align*}
-As evident, this mirrors a problem with $n-1$ variables rather than $n$. Hence, the computational work remains constant, independent of $n$, and the overall complexity is $\mathbf{O(n)}$.
+
+As evident, 
+this mirrors a problem with $n-1$ variables rather than $n$. 
+Hence, 
+the computational work remains constant, 
+independent of $n$, 
+and the overall complexity is $\boxed{O(n)}$.
 
 
 \section{Problem 3}
@@ -114,7 +182,9 @@ As evident, this mirrors a problem with $n-1$ variables rather than $n$. Hence, 
 \section{Problem 4}
 
 We can model the system as a hidden Markov model.
-We can model $X_t$ as a Markov chain with the states $\set{A, B, C, D, E, F}$ and transition matrix:
+We can model $X_t$ as a Markov chain with the states 
+$\set{A, B, C, D, E, F}$ 
+and transition matrix:
 
 $$
 \begin{pmatrix}
