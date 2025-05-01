@@ -186,25 +186,103 @@ We can model $X_t$ as a Markov chain with the states
 $\set{A, B, C, D, E, F}$ 
 and transition matrix:
 
-$$
-\begin{pmatrix}
-0.2 & 0.8 & 0 & 0 & 0 & 0 \\
-0 & 0.2 & 0.8 & 0 & 0 & 0 \\
-0 & 0 & 0.2 & 0.8 & 0 & 0 \\
-0 & 0 & 0 & 0.2 & 0.8 & 0 \\
-0 & 0 & 0 & 0 & 0.2 & 0.8 \\
-0 & 0 & 0 & 0 & 0 & 1 \\
-\end{pmatrix}
-$$
+\begin{align*}
+    T_{i, j} &= P(X_t = j| X_{t-1} = i) \\
+    T &= 
+    \begin{pmatrix}
+        0.2 & 0.8 & 0 & 0 & 0 & 0 \\
+        0 & 0.2 & 0.8 & 0 & 0 & 0 \\
+        0 & 0 & 0.2 & 0.8 & 0 & 0 \\
+        0 & 0 & 0 & 0.2 & 0.8 & 0 \\
+        0 & 0 & 0 & 0 & 0.2 & 0.8 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+\end{align*}
 
 In addition,
 we have the observation matrices for hot and cold:
 
-\subsection{Part 1}
+\begin{align*}
+    O_{\text{hot}} &= 
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+    \end{pmatrix} \\
+    O_{\text{cold}} &= 
+    \begin{pmatrix}
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix} \\
+\end{align*}
 
 We know that the rover starts at state A with probability 1,
 so $P(X_1 = A) = 1$.
-The initial state vector is therefore $[1, 0, 0, 0, 0, 0]^T$.
+The initial state vector is therefore $f_1 = [1, 0, 0, 0, 0, 0]^T$.
+
+\subsection{Part 1}
+
+We are being asked to compute the state distribution
+$f_3$
+given the observations 
+$O_1 = \text{hot}$, $O_2 = \text{cold}$, and $O_3 = \text{cold}$.
+
+
+\begin{align*}
+    f_3 &= \alpha O_{e_3} T f_2 \\
+    &= \alpha O_{e_3} T \pars{\alpha O_{e_2} T f_1} \\
+    &= \alpha O_{\text{cold}} T  O_{\text{cold}} T f_1 \\
+    &= \alpha 
+    \begin{pmatrix}
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        0.2 & 0.8 & 0 & 0 & 0 & 0 \\
+        0 & 0.2 & 0.8 & 0 & 0 & 0 \\
+        0 & 0 & 0.2 & 0.8 & 0 & 0 \\
+        0 & 0 & 0 & 0.2 & 0.8 & 0 \\
+        0 & 0 & 0 & 0 & 0.2 & 0.8 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix} \\
+    & \cdot
+    \begin{pmatrix}
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        0.2 & 0.8 & 0 & 0 & 0 & 0 \\
+        0 & 0.2 & 0.8 & 0 & 0 & 0 \\
+        0 & 0 & 0.2 & 0.8 & 0 & 0 \\
+        0 & 0 & 0 & 0.2 & 0.8 & 0 \\
+        0 & 0 & 0 & 0 & 0.2 & 0.8 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        1 \\
+        0 \\
+        0 \\
+        0 \\
+        0 \\
+        0 \\
+    \end{pmatrix} \\
+    &= [0, 0.2, 0.8, 0, 0, 0] \\
+\end{align*}
 
 
 
