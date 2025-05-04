@@ -352,12 +352,99 @@ $O_1 = \text{hot}$, $O_2 = \text{cold}$, and $O_3 = \text{cold}$.
         0 \\
         0 \\
     \end{pmatrix} \\
-    &= [0, 0.2, 0.8, 0, 0, 0] \\
+    &= \alpha [0, 0.16, 0.64, 0, 0, 0] \\
+    &= [0, \frac{1}{5}, \frac{4}{5}, 0, 0, 0] \\
+\end{align*}
+
+\subsection{Part 2}
+
+We know that
+
+$$
+f_2 = \begin{pmatrix}
+    0 \\
+    1 \\
+    0 \\
+    0 \\
+    0 \\
+    0 \\
+    \end{pmatrix}
+$$
+
+We can then compute
+
+\begin{align*}
+    b_3 &= T O_{\text{cold}} b_4 \\
+    &= [0.8, 1, 0.2, 0.8, 1, 0] \\
+    P(X_2 | \text{hot}_1, \text{cold}_2, \text{cold}_3) &= b_3 \circ f_2 \\
+    &= [0, 1, 0, 0, 0, 0] \\
+\end{align*}
+
+\setcounter{subsection}{3}
+\subsection{Part 4}
+
+We can simply do
+\begin{align*}
+    P(X_4 | \text{hot}_1, \text{cold}_2, \text{cold}_3) &= T f_3 \\
+    &= [0, 0.04, 0.32, 0.64, 0, 0] \\
+\end{align*}
+
+\setcounter{subsection}{2}
+\subsection{Part 3}
+
+Using the results of part 4,
+
+\begin{align*}
+    P(\text{hot}_4 | \text{hot}_1, \text{cold}_2, \text{cold}_3) &= P(X_4 = A \text{ or } X_4 = D | \text{hot}_1, \text{cold}_2, \text{cold}_3) \\
+    &= 0 + 0.64 \\
+    &= 0.64 \\
 \end{align*}
 
 
-
-
 \section{Problem 5}
+
+\subsection{Part 1}
+
+The Bellman equation for this Markov decision process is given by:
+$$V^\pi (s) = R(s, \pi (s)) + \sum_{s' \in {A, B}} T(s, \pi (s), s') V^\pi (s')$$
+
+\subsection{Part 2}
+
+\subsubsection{Iteration 1}
+
+\begin{align*}
+    V_0^\pi (A) &= 0 \\
+    V_1^\pi (A) &= R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s') \\
+    &= 0 + (1 \cdot 0 + 0 \cdot 0) \\
+    &= 0 \\
+    V_0^\pi (B) &= 0 \\
+    V_1^\pi (B) &= R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s') \\
+    &= 5 + (0 \cdot 0 + 1 \cdot 0) \\
+    &= 5 \\
+\end{align*}
+
+\subsubsection{Iteration 2}
+
+\begin{align*}
+    V_2^\pi (A) &= R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s') \\
+    &= 0 + (1 \cdot 0 + 0 \cdot 5) \\
+    &= 0 \\
+    V_2^\pi (B) &= R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s') \\
+    &= 5 + (0 \cdot 0 + 1 \cdot 5) \\
+    &= 10 \\
+\end{align*}
+
+\subsection{Part 3}
+
+\begin{align*}
+    \pi_{\text{new}} (A) &= \argmax_a \set{R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s'), R(A, 2) + \sum_{s'} T(A, 2, s') V_0^\pi (s')} \\
+    &= \argmax_a \set{0 + (1 \cdot 0 + 0 \cdot 5), 0 + (0 \cdot 0 + 1 \cdot 5)} \\
+    &= \argmax_a \set{0, 5} \\
+    &= 2 \\
+    \pi_{\text{new}} (B) &= \argmax_a \set{R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s'), R(B, 2) + \sum_{s'} T(B, 2, s') V_0^\pi (s')} \\
+    &= \argmax_a \set{5 + (0 \cdot 0 + 1 \cdot 5), 5 + (1 \cdot 0 + 0 \cdot 5)} \\
+    &= \argmax_a \set{10, 5} \\
+    &= 1 \\
+\end{align*}
 
 \end{document}
