@@ -25,7 +25,7 @@
     2008003072\\}
     
     {Dhvani Patel -
-    21006030\\}
+    210006030\\}
     
     {Jasmin Badyal -
     2008003131\\}
@@ -178,6 +178,77 @@ and the overall complexity is $\boxed{O(n)}$.
 
 
 \section{Problem 3}
+
+\subsection{Part A}
+
+\includegraphics[scale=0.5, keepaspectratio]{part3a.png}
+
+\subsection{Part B}
+
+Prior probability of fraud:
+
+$P(fraud) = P(travel) * P(fraud | travel) + P(\neg travel) * P(fraud | \neg travel)$
+
+$ = 0.5 * P(fraud | travel) + 0.95 * P(fraud | \neg travel)$
+
+$ = 0.5 * 0.01 + 0.95 * 0.004$
+
+$ = 0.0088$
+
+\space
+
+$P(fraud | FP, \neg IP, CRP)$:
+
+
+$P(fraud | FP, \neg IP, CRP) = α * P(fraud, FP, \neg IP, CRP)$
+
+\space
+
+$ P(fraud, FP, \neg IP, CRP) = \sum_{trav} \alpha \sum_{OC} P(trav) * P(fraud | trav) * P(FP | fraud, trav) * P(OC) * P(\neg IP | OC, fraud) * P(CRP | OC)$
+
+$ = \sum_{OC} P(trav) * P(fraud | trav) * P(FP | fraud, trav) * P(OC) * P(\neg IP | OC, fraud) * P(CRP | OC) +
+
+\sum_{OC} P(\neg trav) * P(fraud | \neg trav) * P(FP | fraud, \neg trav) * P(OC) * P(\neg IP | OC, fraud) * P(CRP | OC)$
+
+$ = P(trav) * P(fraud | trav) * P(FP | fraud, trav) * P(OC) * P(\neg IP | OC, fraud) * P(CRP | OC) +
+
+P(trav) * P(fraud | trav) * P(FP | fraud, trav) * P(\neg OC) * P(\neg IP | \neg OC, fraud) * P(CRP | \neg OC) +
+
+P(\neg trav) * P(fraud | \neg trav) * P(FP | fraud, \neg trav) * P(OC) * P(\neg IP | OC, fraud) * P(CRP | OC) +
+
+P(\neg trav) * P(fraud | \neg trav) * P(FP | fraud, \neg trav) * P(\neg OC) * P(\neg IP | \neg OC, fraud) * P(CRP | \neg OC)$
+
+$ = 0.05 * 0.01 * .90 * .75 * (1 - 0.02) * 0.10 +
+
+0.05 * 0.01 * .90 * .25 * (1 - 0.011) * 0.001 +
+
+0.95 * 0.004 * .10 * .75 * (1 - 0.02) * 0.10 +
+
+0.95 * 0.004 * .10 * .25 * (1 - 0.011) * 0.001$
+
+$ = 0.000033075 + 1.112625\times10^{-7} + 0.00002793 + 9.3955\times10^{-8}$
+
+$ = 0.0000612102175$
+
+Next, calculate alpha. We first need $P(\neg fraud, FP, \neg IP, CRP)$.
+
+$ P(\neg fraud, FP, \neg IP, CRP) = \sum_{trav} \alpha \sum_{OC} P(trav) * P(\neg fraud | trav) * P(FP | \neg fraud, trav) * P(OC) * P(\neg IP | OC, \neg fraud) * P(CRP | OC)$
+
+$ = \sum_{OC} P(trav) * P(\neg fraud | trav) * P(FP | \neg fraud, trav) * P(OC) * P(\neg IP | OC, \neg fraud) * P(CRP | OC) +
+
+\sum_{OC} P(\neg trav) * P(\neg fraud | \neg trav) * P(FP | \neg fraud, \neg trav) * P(OC) * P(\neg IP | OC, \neg fraud) * P(CRP | OC)$
+
+$ = P(trav) * P(\neg fraud | trav) * P(FP | \neg fraud, trav) * P(OC) * P(\neg IP | OC, \neg fraud) * P(CRP | OC) +
+
+P(trav) * P(\neg fraud | trav) * P(FP | \neg fraud, trav) * P(\neg OC) * P(\neg IP | \neg OC, \neg fraud) * P(CRP | \neg OC) +
+
+P(\neg trav) * P(\neg fraud | \neg trav) * P(FP | \neg fraud, \neg trav) * P(OC) * P(\neg IP | OC, \neg fraud) * P(CRP | OC) +
+
+P(\neg trav) * P(\neg fraud | \neg trav) * P(FP | \neg fraud, \neg trav) * P(\neg OC) * P(\neg IP | \neg OC, \neg fraud) * P(CRP | \neg OC)$
+
+Alpha $= 1/(P(fraud, FP, \neg IP, CRP) + P(\neg fraud, FP, \neg IP, CRP))$.
+
+The final answer is $0.0000612102175 * $ alpha
 
 \section{Problem 4}
 
