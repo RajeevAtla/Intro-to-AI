@@ -332,4 +332,48 @@ Using the results of part 4,
 
 \section{Problem 5}
 
+\subsection{Part 1}
+
+The Bellman equation for this Markov decision process is given by:
+$$V^\pi (s) = R(s, \pi (s)) + \sum_{s' \in {A, B}} T(s, \pi (s), s') V^\pi (s')$$
+
+\subsection{Part 2}
+
+\subsubsection{Iteration 1}
+
+\begin{align*}
+    V_0^\pi (A) &= 0 \\
+    V_1^\pi (A) &= R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s') \\
+    &= 0 + (1 \cdot 0 + 0 \cdot 0) \\
+    &= 0 \\
+    V_0^\pi (B) &= 0 \\
+    V_1^\pi (B) &= R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s') \\
+    &= 5 + (0 \cdot 0 + 1 \cdot 0) \\
+    &= 5 \\
+\end{align*}
+
+\subsubsection{Iteration 2}
+
+\begin{align*}
+    V_2^\pi (A) &= R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s') \\
+    &= 0 + (1 \cdot 0 + 0 \cdot 5) \\
+    &= 0 \\
+    V_2^\pi (B) &= R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s') \\
+    &= 5 + (0 \cdot 0 + 1 \cdot 5) \\
+    &= 10 \\
+\end{align*}
+
+\subsection{Part 3}
+
+\begin{align*}
+    \pi_{\text{new}} (A) &= \argmax_a \set{R(A, 1) + \sum_{s'} T(A, 1, s') V_0^\pi (s'), R(A, 2) + \sum_{s'} T(A, 2, s') V_0^\pi (s')} \\
+    &= \argmax_a \set{0 + (1 \cdot 0 + 0 \cdot 5), 0 + (0 \cdot 0 + 1 \cdot 5)} \\
+    &= \argmax_a \set{0, 5} \\
+    &= 2 \\
+    \pi_{\text{new}} (B) &= \argmax_a \set{R(B, 1) + \sum_{s'} T(B, 1, s') V_0^\pi (s'), R(B, 2) + \sum_{s'} T(B, 2, s') V_0^\pi (s')} \\
+    &= \argmax_a \set{5 + (0 \cdot 0 + 1 \cdot 5), 5 + (1 \cdot 0 + 0 \cdot 5)} \\
+    &= \argmax_a \set{10, 5} \\
+    &= 1 \\
+\end{align*}
+
 \end{document}
