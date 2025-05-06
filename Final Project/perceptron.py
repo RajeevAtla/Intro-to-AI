@@ -197,7 +197,7 @@ def run_experiment(task_name, train_dataset, test_dataset):
             current_percent_errors.append(test_error)
             print(f"    Run {run + 1}: Time={train_time:.2f}s, Error={test_error:.4f}")
 
-            print(model.weights)
+            #print(model.weights)
 
         # Calculate stats for this percentage
         avg_time = np.mean(current_percent_times)
