@@ -74,3 +74,71 @@ def load_digit_dataset(image_file, label_file, img_height, img_width):
         ImageLabelDataset: A dataset object for the digit data.
     """
     return ImageLabelDataset(image_file, label_file, img_height, img_width)
+
+class ImageLabelDataset_Perceptron(Dataset):
+    def __init__(self, image_file, label_file, img_height, img_width):
+        self.img_height = img_height
+        self.img_width = img_width
+        self.image_data = self._load_images(image_file)
+        self.label_data = self._load_labels(label_file)
+        assert len(self.image_data) == len(self.label_data), "Number of images and labels must match!"
+
+    def trim(img):
+       pass 
+
+    def _load_images(self, file_path):
+        # TODO: Implement file parsing based on the actual data format
+        # This is a placeholder - you NEED to adapt this based on how
+        # images are stored in the files (e.g., one image per line,
+        # fixed width characters, etc.)
+        print(f"Loading images from: {file_path}")
+        images = []
+        with open(file_path, 'r') as file:
+            img = []
+            for line in file:
+                line = line.rstrip('\n')  # Remove trailing newline IMPORTANTLY
+                img.append([1.0 if c in ['#', '+'] else 0.0 for c in line])  # Example: Binary features                
+                if len(img) == self.img_height:
+                    img = np.array(img, dtype=np.float32)
+                    #img = trim(img)
+                    images.append(img)
+                    img = []
+
+        if not images:
+            raise ValueError(f"No images loaded from {file_path}. Check parsing logic and file format.")
+        
+        print(f"Loaded {len(images)} images.")
+        return images
+
+    def _load_labels(self, file_path):
+        # TODO: Implement label file parsing
+        print(f"Loading labels from: {file_path}")
+        with open(file_path, 'r') as f:
+            # Assuming one label per line, convert to integer
+            labels = [int(line.strip()) for line in f if line.strip()]
+        print(f"Loaded {len(labels)} labels.")
+        return labels
+
+    def __len__(self):
+        return len(self.label_data)
+
+    def __getitem__(self, idx):
+        image = self.image_data[idx]
+        label = self.label_data[idx]
+        return image, label
+
+
+def load_digit_dataset(image_file, label_file, img_height, img_width):
+    """
+    Loads the digit dataset using the ImageLabelDataset class.
+
+    Args:
+        image_file (str): Path to the image file.
+        label_file (str): Path to the label file.
+        img_height (int): Height of the digit images.
+        img_width (int): Width of the digit images.
+
+    Returns:
+        ImageLabelDataset: A dataset object for the digit data.
+    """
+    return ImageLabelDataset(image_file, label_file, img_height, img_width)
