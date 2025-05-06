@@ -16,8 +16,6 @@ INPUT_SIZE_DIGITS = DIGIT_IMG_HEIGHT * DIGIT_IMG_WIDTH
 INPUT_SIZE_FACES = FACE_IMG_HEIGHT * FACE_IMG_WIDTH
 
 # Model Hyperparameters (tune these)
-LEARNING_RATE = 0.001
-BATCH_SIZE = 64
 NUM_EPOCHS = 20  # Adjust as needed
 
 # Output sizes
